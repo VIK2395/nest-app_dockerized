@@ -48,29 +48,26 @@ services:
       - 80:80
     volumes:
       - ./volumes/nginx/usr-share-nginx-html:/usr/share/nginx/html         # host volume
-      - ./volumes/nginx/etc-nginx:/etc/nginx                               # host volume
-#     - usr-share-nginx-html:/usr/share/nginx/html                         # named volume
-#     - etc-nginx:/etc/nginx                                               # named volume
+      - etc-nginx:/etc/nginx                                               # named volume
     extra_hosts:
       - host.docker.internal:host-gateway
+    networks:
+      vue-nest-network:
+        ipv4_address: 172.25.0.4
+#   network_mode: none             # docker run --network none => no network interaction at all
+#   If no network is specified for a service then [projectname]_default network will be created
+#   to connect the service
 
 volumes:
   mysql-nest-app-data:
     name: mysql-nest-app-data
-# etc-nginx:                                                              # named volume settings
-#   name: etc-nginx
-#   driver: local
-#   driver_opts:
-#     type: none
-#     o: bind
-#     device: /home/named_volumes/etc-nginx                               # set named volume save directory
-# usr-share-nginx-html:                                                   # named volume settings
-#   name: usr-share-nginx-html
-#   driver: local
-#   driver_opts:
-#     type: none
-#     o: bind
-#     device: /home/named_volumes/usr-share-nginx-html                    # set named volume save directory
+  etc-nginx:                                             # named volume settings
+    name: etc-nginx
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./volumes/nginx/etc-nginx                  # set relative | absolute named volume save directory path
 
 networks:
   vue-nest-network:
