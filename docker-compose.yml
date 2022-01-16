@@ -44,13 +44,22 @@ services:
     image: nginx:1.21.5-alpine
     container_name: nest-app-nginx
     restart: unless-stopped
+#   user: $USER                  # docker run --user [username]            # on new named volume creation
     ports: 
       - 80:80
     volumes:
       - ./volumes/nginx/usr-share-nginx-html:/usr/share/nginx/html         # host volume
       - etc-nginx:/etc/nginx                                               # named volume
     extra_hosts:
-      - host.docker.internal:host-gateway
+      # Add host-container:container-gateway to directory /etc/hosts inside the container
+      # Also Docker automatically adds host-host:host-gateway on host machine when installed
+      # From official doc: special DNS name which resolves to the internal IP address used by the host
+        - host.docker.internal:host-gateway
+      # For this to work we have to update /etc/hosts directly on host machine as well:
+      # Windows C:\Windows\System32\drivers\etc
+      # DUE TO DOCKER IT IS TWO LEVEL HOST BINDING
+      # - vue-nest-app.com:host-gateway
+      # - www.vue-nest-app.com:host-gateway
     networks:
       vue-nest-network:
         ipv4_address: 172.25.0.4
